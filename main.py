@@ -11,6 +11,7 @@ import threading
 import random
 import configparser
 import hashlib
+import ctypes
 
 """
 Class defining a profile
@@ -21,6 +22,7 @@ class Profile:
         self.version = version
         self.profile_directory = "instances/" + self.name
         self.username = "Steve"
+        self.ram = "2"
         
     def launch_sequence(self):
         self.found = False
@@ -36,7 +38,8 @@ class Profile:
         self.options = {
             "username": self.username,
             "uuid": str(uuid.UUID(bytes=hashlib.md5(bytes(f"OfflinePlayer:{self.username}", "utf-8")).digest()[:16])),
-            "token": ""}
+            "token": "",
+            "jvmArguments": [f"-Xmx{self.ram}G", f"-Xms{self.ram}G"]}
         command = minecraft_launcher_lib.command.get_minecraft_command(self.version, self.profile_directory, self.options)
         subprocess.Popen(command, creationflags=subprocess.CREATE_NO_WINDOW | subprocess.CREATE_NEW_PROCESS_GROUP)
         os._exit(0)
@@ -89,6 +92,16 @@ class Launcher:
                                                     image=customtkinter.CTkImage(self.play, size=(30, 30)),
                                                     compound="right",
                                                     font=("Arial", 25, "bold"))
+                                                    
+        self.settings_button = customtkinter.CTkButton(self.root, command=self.settings_page,
+                                                    fg_color="#47316F",
+                                                    bg_color="#1C1C1C",
+                                                    hover_color="#342451",
+                                                    text="⚙",
+                                                    width=50,
+                                                    height=50,
+                                                    corner_radius=20,
+                                                    font=("Arial", 30, "bold"))
 
         self.add_profile_button = customtkinter.CTkButton(self.root,
                                                             command=self.create_profile_page,
@@ -255,11 +268,40 @@ class Launcher:
                                                             width=500,
                                                             height=50,
                                                             corner_radius=20)
+                                                        
+        self.settings_label_title = customtkinter.CTkLabel(self.root, 
+                                                           text="Settings",
+                                                           font=("Arial", 50, "bold"))
+        
+        self.ram_slider = customtkinter.CTkSlider(self.root, 
+                                                  from_=1, to=self.get_system_ram()-1, 
+                                                  number_of_steps=int(self.get_system_ram()-1), 
+                                                  width=500,
+                                                  command=self.update_ram_label,
+                                                  button_color="#47316F",
+                                                  button_hover_color="#342451",
+                                                  progress_color="#47316F")
+                                                  
+        self.ram_value_label = customtkinter.CTkLabel(self.root, 
+                                                      text="Allocated RAM: 2 GB",
+                                                      font=("Arial", 25, "bold"))
+                                                      
+        self.save_settings_button = customtkinter.CTkButton(self.root,
+                                                                command=self.save_settings,
+                                                                fg_color="#348D5C",
+                                                                bg_color="#1C1C1C",
+                                                                hover_color="#24512F",
+                                                                text="SAVE",
+                                                                width=200,
+                                                                height=50,
+                                                                corner_radius=20,
+                                                                font=("Arial", 25, "bold"))
         
                         
     def clear_ui(self): #Clearing the widgets in the window
         self.gui_update()
         self.play_button.place_forget()
+        self.settings_button.place_forget()
         self.add_profile_button.place_forget()
         self.profiles_combobox.place_forget()
         self.edit_profile_button.place_forget()
@@ -279,6 +321,31 @@ class Launcher:
         self.creeper.place_forget()
         self.block.place_forget()
         self.loading_label.place_forget()
+        self.settings_label_title.place_forget()
+        self.ram_slider.place_forget()
+        self.ram_value_label.place_forget()
+        self.save_settings_button.place_forget()
+
+    def get_system_ram(self): # Returns system RAM in GB
+        class MEMORYSTATUSEX(ctypes.Structure):
+            _fields_ = [
+                ("dwLength", ctypes.c_ulong),
+                ("dwMemoryLoad", ctypes.c_ulong),
+                ("ullTotalPhys", ctypes.c_ulonglong),
+                ("ullAvailPhys", ctypes.c_ulonglong),
+                ("ullTotalPageFile", ctypes.c_ulonglong),
+                ("ullAvailPageFile", ctypes.c_ulonglong),
+                ("ullTotalVirtual", ctypes.c_ulonglong),
+                ("ullAvailVirtual", ctypes.c_ulonglong),
+                ("sullAvailExtendedVirtual", ctypes.c_ulonglong),
+            ]
+        stat = MEMORYSTATUSEX()
+        stat.dwLength = ctypes.sizeof(MEMORYSTATUSEX)
+        ctypes.windll.kernel32.GlobalMemoryStatusEx(ctypes.byref(stat))
+        total_ram_gb = round(stat.ullTotalPhys / (1024 ** 3))
+        if total_ram_gb < 2:
+            total_ram_gb = 2
+        return total_ram_gb
 
     def loading_page(self): #Displaying loading page widgets in the window
         self.clear_ui()
@@ -303,11 +370,42 @@ class Launcher:
         self.profiles_combobox.place(relx=0.05, rely=0.836)
         self.add_profile_button.place(relx=0.204, rely=0.836)
         self.edit_profile_button.place(relx=0.05, rely=0.91)
+        self.settings_button.place(relx=0.66, rely=0.855)
         self.play_button.place(relx=0.75, rely=0.855)
         
+    def settings_page(self): #Displaying settings page widgets in the window
+        self.clear_ui()
+        self.bg.pack_forget()
+        self.settings_label_title.place(relx=0.5, rely=0.1, anchor="center")
+        
+        saved_ram = self.get_saved_ram()
+        self.ram_slider.set(saved_ram)
+        self.update_ram_label(saved_ram)
+        
+        self.ram_value_label.place(relx=0.5, rely=0.4, anchor="center")
+        self.ram_slider.place(relx=0.5, rely=0.5, anchor="center")
+        
+        self.back_button.place(relx=0.75, rely=0.855)
+        self.save_settings_button.place(relx=0.525, rely=0.855)
+
+    def update_ram_label(self, value): #Update the ram text
+        self.ram_value_label.configure(text=f"Allocated RAM: {int(float(value))} GB")
+        
+    def save_settings(self): #Save the settings and return to main page
+        if 'GUI' not in config:
+            config['GUI'] = {}
+        config.set('GUI', 'ram_allocation', str(int(self.ram_slider.get())))
+        with open("config.ini", 'w') as configfile:
+            config.write(configfile)
+        self.main_page()
+        
+    def get_saved_ram(self): #Returns the saved RAM allocation
+        if 'GUI' in config and 'ram_allocation' in config['GUI']:
+            return int(config['GUI']['ram_allocation'])
+        return 2
+        
     def edit_profile_page(self): #Displaying profile edition page widgets in the window
-        if self.profiles_combobox_variable.get() == "latest" :
-            messagebox.showwarning("Invalid Action", "You can't edit an integrated profile.")
+        if self.profiles_combobox_variable.get() == "none" :
             return
         self.clear_ui()
         self.bg.pack_forget()
@@ -324,6 +422,7 @@ class Launcher:
         self.versions_combobox.configure(values=self.available_versions)
         self.versions_combobox.set(self.profile.version)
         self.profile_name_entry.insert(0, self.profile.name)
+        self.save_last_used_profile()
         
     def create_profile_page(self): #Displaying profile creation page widgets in the window
         self.clear_ui()
@@ -339,6 +438,7 @@ class Launcher:
         self.versions_combobox.configure(values=installable_versions)
         latest_released_version = installable_versions[0]
         self.versions_combobox.set(latest_released_version)
+        self.save_last_used_profile()
     
     def gui_update(self): #Filling profiles combobox and clearing profile name entry
         self.profiles_combobox.configure(values=self.get_profile_list_by_name())
@@ -360,8 +460,16 @@ class Launcher:
             if version["type"] == "release": available_versions_list.append(version["id"])
         return available_versions_list
     
+    def verify_str(self, str):
+        allowed_chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-"
+        if str == "": return False
+        for element in str:
+            if element not in allowed_chars:
+                return False
+        return True
+    
     def create_profile(self): #Create a profile
-        if self.profile_name_entry.get() == "" or " " in self.profile_name_entry.get() or self.profile_name_entry.get() in self.profile_list_by_name:
+        if not self.verify_str(self.profile_name_entry.get()) or self.profile_name_entry.get() in self.profile_list_by_name:
             messagebox.showerror("Error", "Invalid Name.")
             return 1
         os.mkdir(f"instances/{self.profile_name_entry.get()}")
@@ -376,7 +484,7 @@ class Launcher:
         new_name = self.profile_name_entry.get()
         new_version = self.versions_combobox.get()
 
-        if not new_name or (new_name in self.get_profile_list_by_name() and new_name != old_name) or new_name.endswith("."):
+        if  (new_name != old_name and new_name in self.profile_list_by_name) or not self.verify_str(new_name):
             messagebox.showerror("Error", "Invalid Name.")
             return 1
 
@@ -418,7 +526,7 @@ class Launcher:
         self.save_profiles()
         self.gui_update()
         if len(self.profile_list_by_name) < 1:
-            self.profiles_combobox_variable.set("latest")
+            self.profiles_combobox_variable.set("none")
         else:
             self.profiles_combobox_variable.set(self.profile_list_by_name[0])
         self.save_last_used_profile()
@@ -482,13 +590,15 @@ class Launcher:
                 return self.profile_list[i]
     
     def start_game(self): #Start the game files download and launch
-        self.loading_page()
+        
         selected_profile_name = self.profiles_combobox_variable.get()
+        if self.profiles_combobox.get() == "none":
+            messagebox.showerror("Error", "Create a profile first !")
+            return
+        self.loading_page()
         selected_profile = self.get_profile_from_name(selected_profile_name)
-        if self.profiles_combobox.get() == "latest":
-            last_version = self.get_versions()
-            selected_profile = Profile("latest", last_version[0])
         selected_profile.username = self.username
+        selected_profile.ram = str(self.get_saved_ram())
         self.save_last_used_profile()
         thread = threading.Thread(target=selected_profile.launch_sequence, daemon=True)
         thread.start()  
