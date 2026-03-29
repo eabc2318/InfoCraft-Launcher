@@ -21,7 +21,7 @@ You can use it to play any version of Minecraft with separed game files for each
 ### Loading animation
 <img src="preview/loading_preview.png"></img>
 ### Settings page
-/!\ SOON /!\
+<img src="preview/settings_preview.png"></img>
 ### Profile Managment pages
 <img src="preview/pc_preview.png"></img>
 <img src="preview/pe_preview.png"></img>
