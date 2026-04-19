@@ -12,6 +12,32 @@ import random
 import configparser
 import hashlib
 import ctypes
+import time
+from pypresence import Presence
+
+"""
+Rich Presence setup
+"""
+presence = Presence("1495473776043757819")
+
+def discord_presence_worker():
+        # Initialiser la connexion Discord
+        presence.connect()
+        
+        # Mettre à jour la présence
+        presence.update(
+            state="Idle",
+            large_text="Astro Launcher 2",
+            small_image="block"
+        )
+        while True:
+            time.sleep(15)
+
+def update_discord_presence(state):
+    presence.update(state=state)
+    
+thread = threading.Thread(target=discord_presence_worker, daemon=True)
+thread.start()
 
 """
 Class defining a profile
@@ -41,8 +67,24 @@ class Profile:
             "token": "",
             "jvmArguments": [f"-Xmx{self.ram}G", f"-Xms{self.ram}G"]}
         command = minecraft_launcher_lib.command.get_minecraft_command(self.version, self.profile_directory, self.options)
-        subprocess.Popen(command, creationflags=subprocess.CREATE_NO_WINDOW | subprocess.CREATE_NEW_PROCESS_GROUP)
-        os._exit(0)
+        
+        # Lancer Minecraft
+        process = subprocess.Popen(command, creationflags=subprocess.CREATE_NO_WINDOW | subprocess.CREATE_NEW_PROCESS_GROUP)
+        
+        # Cacher la fenêtre
+        app.root.withdraw()
+        update_discord_presence("Playing Minecraft")
+        
+        # Attendre que Minecraft se ferme dans un thread séparé
+        wait_thread = threading.Thread(target=self.wait_minecraft_close, args=(process,), daemon=True)
+        wait_thread.start()
+    
+    def wait_minecraft_close(self, process):
+        process.wait()
+        time.sleep(1)
+        app.root.deiconify()
+        app.main_page()
+        update_discord_presence("Idle")
 
 
 """
@@ -460,10 +502,10 @@ class Launcher:
             if version["type"] == "release": available_versions_list.append(version["id"])
         return available_versions_list
     
-    def verify_str(self, str):
+    def verify_str(self, string_to_verify): #Verify if a string is valid for a profile name (not empty and only contains allowed characters)
         allowed_chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-"
-        if str == "": return False
-        for element in str:
+        if string_to_verify == "": return False
+        for element in string_to_verify:
             if element not in allowed_chars:
                 return False
         return True

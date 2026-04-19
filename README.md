@@ -13,6 +13,7 @@ You can use it to play any version of Minecraft with separed game files for each
 | **Profiles files separation** | ✅ |
 | **Offline Login** | ✅ |
 | **Customizable settings** | ✅ |
+| **Discord Rich Presence** | ✅ |
 
 ### Login page
 <img src="preview/login_preview.png"></img>
