@@ -4,6 +4,7 @@ from PIL import Image
 import minecraft_launcher_lib
 import subprocess
 import pickle
+import json
 import uuid
 import os
 import shutil
@@ -505,11 +506,39 @@ class Launcher:
                 return False
         return True
     
+    def create_dummy_launcher_config(self, profile_directory): #Create a dummy launcher_profiles.json to avoid errors when launching the game for the first time
+        data = {
+            "profiles": {
+                "Default": {
+                    "name": "Default",
+                    "type": "custom",
+                    "created": "2024-01-01T00:00:00.000Z",
+                    "lastUsed": "2024-01-01T00:00:00.000Z",
+                    "icon": "Grass",
+                    "lastVersionId": "1.20.1"
+                }
+            },
+            "settings": {
+                "crashAssistance": True,
+                "enableAdvanced": True
+            },
+            "launcherVersion": {
+                "format": 21,
+                "name": "2.x",
+                "profilesFormat": 3
+            }
+        }
+        os.makedirs(profile_directory, exist_ok=True)
+        path = os.path.join(profile_directory, "launcher_profiles.json")
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=4)
+
     def create_profile(self): #Create a profile
         if not self.verify_str(self.profile_name_entry.get()) or self.profile_name_entry.get() in self.profile_list_by_name:
             messagebox.showerror("Error", "Invalid Name.")
             return 1
         os.mkdir(f"instances/{self.profile_name_entry.get()}")
+        self.create_dummy_launcher_config(f"instances/{self.profile_name_entry.get()}")
         self.profile_list.append(Profile(self.profile_name_entry.get(), self.versions_combobox.get()))
         self.save_profiles()
         self.profiles_combobox_variable.set(self.profile_name_entry.get())
