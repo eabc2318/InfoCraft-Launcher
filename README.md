@@ -29,7 +29,7 @@ Cliquez sur le bouton ci-dessous pour récupérer la dernière version de l'exé
 ## 🛠️ Configuration Requise & Prérequis
 
 * **Java :** Normalement intégré au launcher, mais Java 17+ est recommandé si vous utilisez la version `.jar`.
-* **RAM :** Nous vous conseillons d'allouer au moins **4 Go de RAM** dans les options du launcher pour une expérience fluide avec les mods.
+* **RAM :** Nous vous conseillons d'allouer au moins **4 Go de RAM** dans les options du launcher pour une expérience fluide.
 
 ---
 
