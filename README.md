@@ -48,8 +48,8 @@ Cliquez sur le bouton ci-dessous pour récupérer la dernière version de l'exé
 
 ## 👥 Contributeurs (BUT Info)
 
-* **Prénom Nom** (@votre_github) - Développeur du Launcher
-* **Mathias M** (@votre_github) - A écrit le petit readme
+* **Aurele J** (@votre_github) - Développeur du Launcher
+* **Mathias M** (@votre_github) - Développeur pour la rethématisation du launcher 
 
 ---
 <p align="center">Fait avec ❤️ par et pour le BUT Informatique. Amusez-vous bien !</p>
