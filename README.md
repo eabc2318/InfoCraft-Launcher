@@ -1,35 +1,42 @@
-## 🪐 Astro Launcher 2
-<img src="assets/logo.png"></img>
+![hippo](https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExMTY1Y214Yjhic2oyNm9rb3V4NTcwa2V6cGZkZjlnY21uNWc1Y3JnYSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/8UiYQWoZgafFJaN9hw/giphy.gif)
 
-## Overview
-My ultimate minecraft launcher, made using python.
-You can use it to play any version of Minecraft with separed game files for each profiles.
+Bienvenue sur le dépôt du launcher officiel d'**Infocraft**, l'événement Minecraft exclusif du BUT Informatique ! Ce launcher personnalisé vous permet de vous connecter instantanément au serveur avec la configuration nécessaire.
 
-### Objectives
+---
 
-| Functionality | Implementation |
+## 🚀 Installation Rapide
+
+Suivez ces étapes simples pour rejoindre l'aventure :
+
+### Étape 1 : Télécharger le Launcher
+Cliquez sur le bouton ci-dessous pour récupérer la dernière version de l'exécutable correspondant à votre système d'exploitation.
+
+| Système d'exploitation | Lien de téléchargement |
 | :--- | :--- |
-| **GUI** | ✅ |
-| **Profiles files separation** | ✅ |
-| **Offline Login** | ✅ |
-| **Customizable settings** | ✅ |
-| **Discord Rich Presence** | ✅ |
+| **Windows** (`.exe`) | [📥 Télécharger pour Windows](#) |
 
-### Login page
-<img src="preview/login_preview.png"></img>
-### Main Page
-<img src="preview/main_preview.png"></img>
-### Loading animation
-<img src="preview/loading_preview.png"></img>
-### Settings page
-<img src="preview/settings_preview.png"></img>
-### Profile Managment pages
-<img src="preview/pc_preview.png"></img>
-<img src="preview/pe_preview.png"></img>
+> 💡 *Note : Si vous n'avez pas de lien direct, vous pouvez aussi aller dans la section **Releases** à droite de cette page GitHub pour trouver l'exécutable.*
 
+### Étape 2 : Lancement
+1. Double-cliquez sur le fichier téléchargé (`Infocraft-Launcher.exe`).
+2. Si Windows Defender affiche une alerte *(éditeur inconnu)*, cliquez sur **"Informations complémentaires"** puis **"Exécuter quand même"**. (Promis, c'est du code 100 but info garantis sans virus).
 
-## ⚙️ Installation
-To execute this app, you only need to download the last release in the dedicated section, next, extract the zip file and create a shortcut were you want the "AstroLauncher 2.exe" file to be.
+### Étape 3 : Lancement
+2. Cliquez sur **"Jouer"**. Le launcher s'occupe de vous connecter directement au bon serveur !
 
-## 🚀 Usage
-Once your shortcut is placed in the place you want, you can launch it and enjoy !
+---
+
+## 🛠️ Configuration Requise & Prérequis
+
+* **Java :** Normalement intégré au launcher, mais Java 17+ est recommandé si vous utilisez la version `.jar`.
+* **RAM :** Nous vous conseillons d'allouer au moins **4 Go de RAM** dans les options du launcher pour une expérience fluide avec les mods.
+
+---
+
+## 👥 Contributeurs (BUT Info)
+
+* **Prénom Nom** (@votre_github) - Développeur du Launcher
+* **Mathias M** (@votre_github) - A écrit le petit readme
+
+---
+<p align="center">Fait avec ❤️ par et pour le BUT Informatique. Amusez vous bien !</p>
