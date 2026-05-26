@@ -38,7 +38,9 @@ class Profile:
                 "username": self.username,
                 "uuid": str(uuid.UUID(bytes=hashlib.md5(bytes(f"OfflinePlayer:{self.username}", "utf-8")).digest()[:16])),
                 "token": "",
-                "jvmArguments": [f"-Xmx{self.ram}G", f"-Xms{self.ram}G"]}
+                "jvmArguments": [f"-Xmx{self.ram}G", f"-Xms{self.ram}G"],
+                "server": "infocraft89.aternos.me",
+                "port": "13619"}
             command = minecraft_launcher_lib.command.get_minecraft_command(self.version, self.profile_directory, self.options)
             
             process = subprocess.Popen(command, creationflags=subprocess.CREATE_NO_WINDOW | subprocess.CREATE_NEW_PROCESS_GROUP)
@@ -324,7 +326,7 @@ class Launcher:
     
     def start_game(self): #Start the game files download and launch
         self.loading_page()
-        selected_profile = Profile("Default", "1.21.11")
+        selected_profile = Profile("Default", "1.14.4")
         selected_profile.username = self.username
         selected_profile.ram = str(self.get_saved_ram())
         thread = threading.Thread(target=selected_profile.launch_sequence, daemon=True)
