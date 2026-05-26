@@ -1,7 +1,7 @@
 # 🎮 Infocraft - Launcher 
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Minecraft-tbh-blue?style=for-the-badge&logo=minecraft&logoColor=white" alt="Minecraft Version">
+  <img src="https://img.shields.io/badge/Minecraft-1.14.4-blue?style=for-the-badge&logo=minecraft&logoColor=white" alt="Minecraft Version">
   <img src="https://img.shields.io/badge/Statut-Événement%20En%20Cours-success?style=for-the-badge" alt="Status">
   <img src="https://img.shields.io/badge/BUT_Info-Projet-orange?style=for-the-badge" alt="BUT Info">
 </p>
