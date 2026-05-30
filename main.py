@@ -39,7 +39,6 @@ class Profile:
                 "uuid": str(uuid.UUID(bytes=hashlib.md5(bytes(f"OfflinePlayer:{self.username}", "utf-8")).digest()[:16])),
                 "token": "",
                 "jvmArguments": [f"-Xmx{self.ram}G", f"-Xms{self.ram}G"],
-                "executablePath": "javaw",
                 "server": "infocraft89.aternos.me",
                 "port": "13619"}
             command = minecraft_launcher_lib.command.get_minecraft_command(self.version, self.profile_directory, self.options)
@@ -355,9 +354,3 @@ if __name__ == "__main__":
     
     app = Launcher()
     app.display()
-
-
-"""
-Compilation Instructions:
-CMD : pyinstaller --noconfirm --onefile --windowed --icon="assets/icon.ico" --add-data="assets;assets" --collect-all customtkinter main.py
-"""
